@@ -41,9 +41,9 @@ class SecretSanta():
         'laterally moved off the edge of flat earth for',
     ]
 
-    def __init__(self, filename):
+    def __init__(self, filename, quotesfile="quotes.txt"):
         self.chosen = {}
-        fh = open("quotes.txt", "rt")
+        fh = open(quotesfile, 'rt')
         for line in fh:
             line = line.strip().strip('"')
             line = line.replace(r'\n', '\n')
@@ -176,7 +176,12 @@ if __name__ == '__main__':
 \x1b[0m
 <><><><><><><><><><><><><><><><><><><><><><>''')
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-q', '--quotes',
+        default='quotes.txt',
+        help='funny quotes file (one line per quote)'
+    )
     parser.add_argument('filename')
     args = parser.parse_args()
-    ss = SecretSanta(args.filename)
+    ss = SecretSanta(args.filename, quotesfile=args.quotes)
     ss.run()

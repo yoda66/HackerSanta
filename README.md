@@ -9,3 +9,5 @@ Merry Christmas and Happy Holidays.
 
     - Joff Thyer (c) 2020
 
+![alt text](https://github.com/yoda66/HackerSanta/blob/main/santaclaus.jpg?raw=true)
+

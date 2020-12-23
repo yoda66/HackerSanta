@@ -6,5 +6,6 @@ containing the gift recipient and gift givers.
 An example file is included for you.
 
 Merry Christmas and Happy Holidays.
--Joff Thyer (c) 2020
+
+    - Joff Thyer (c) 2020
 

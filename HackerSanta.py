@@ -14,34 +14,9 @@ class SecretSanta():
     RESET = '\x1b[0m'
     quotes = []
     names = {}
-    giverphrases = [
-        'bequested this largesse to',
-        'totally punked',
-        'yielded this with love to',
-        'gave this beauty to',
-        'generously threw this at',
-        'bestowed this idealic object to',
-        'conferred this enigmatic thing to',
-        'proferred the wonders of this majestic tool to',
-        'granted this for the enjoyment of',
-        'used Orion\'s belt and a signed DLL (sputnik.dll) to send this to',
-        'employed Covid19 express and sent this to',
-        'leveraged a DNS covert channel to transmit this to',
-        'rode atop a Solar Wind to dump this on',
-        'backdoored a Fortune 500 to dump this on',
-        'leveraged Putin\'s C2 infrastructure and transmitted this to',
-        'pwned 4-bits in an IP source address to trickle this to',
-        'ROP chained and Heap exploited this gift to',
-        'Returned to Lib-C and out popped a thing to',
-        'said its NOT the DNS, and sent this to',
-        'leveraged a supply-chain trojan to compromise',
-        'turned his/her flux capacitor molecular transport towards',
-        'XOR\'ed while bit shifting towards',
-        'Kerberoasted while Password spraying',
-        'laterally moved off the edge of flat earth for',
-    ]
+    giverphrases = []
 
-    def __init__(self, filename, quotesfile="quotes.txt"):
+    def __init__(self, filename, quotesfile="quotes.txt", giverphrasesfile="giverphrases.txt"):
         self.chosen = {}
         fh = open(quotesfile, 'rt')
         for line in fh:
@@ -50,6 +25,15 @@ class SecretSanta():
             if line:
                 self.quotes.append(line)
         fh.close()
+
+        fh = open(giverphrasesfile, 'rt')
+        for line in fh:
+            line = line.strip().strip('"')
+            line = line.replace(r'\n', '\n')
+            if line:
+                self.giverphrases.append(line)
+        fh.close()
+
         ch = open(filename, 'rt')
         csvfile = csv.reader(ch, delimiter=',')
         for row in csvfile:
@@ -93,7 +77,7 @@ class SecretSanta():
 \x1b[2m    The Sorting Hat Chooses: \x1b[0m[\x1b[1m{}\x1b[0m]
 
     \x1b[{}m{}\x1b[0m
-'''.format(name, random.randint(31, 36), quote))
+'''.format(name, random.randint(31, 36), self.format_quote(quote)))
             print('_' * 78)
             sys.stdin.flush()
             print('{} names remaining. <Enter to reveal giver...>'.format(len(self.names)))
@@ -107,6 +91,18 @@ class SecretSanta():
                 del self.chosen[name]
                 self.names[name] = giver
         self.results()
+
+    def format_quote(self, quote):
+        if len(quote) <= 70:
+            return quote
+        newq = ''
+        l = 70
+        for word in quote.split():
+            newq += word + ' '
+            if len(newq) > l:
+                newq += '\r\n    '
+                l += 70
+        return newq
 
     def results(self):
         print("\x1b[2J\x1b[H" + r"""
@@ -181,7 +177,15 @@ if __name__ == '__main__':
         default='quotes.txt',
         help='funny quotes file (one line per quote)'
     )
+    parser.add_argument(
+        '-gp', '--giverphrases',
+        default='giverphrases.txt',
+        help='funny giver phrases file (one line per)'
+    )
     parser.add_argument('filename')
     args = parser.parse_args()
-    ss = SecretSanta(args.filename, quotesfile=args.quotes)
+    ss = SecretSanta(
+        args.filename,
+        quotesfile=args.quotes,
+        giverphrasesfile=args.giverphrases)
     ss.run()
